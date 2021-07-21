@@ -247,8 +247,8 @@ for file in paths:
                     
                 sentence_in_progress_is_noisy = True
    
-        print(len(clean_sentences))
-        print(len(noisy_sentences))
+        # print(len(clean_sentences))
+        # print(len(noisy_sentences))
     
        
     debugged_sentences[file] = clean_sentences    
