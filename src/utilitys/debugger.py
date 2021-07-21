@@ -183,20 +183,21 @@ for file in paths:
                                     noisy_text = rest_of_the_line_sentences[-1]
                                 else:
                                     noisy_text = noisy_sentence
+                                    sentence_in_progress_is_noisy = True
                                     
                                 if not noisy_sentence_active:
                                     noisy_sentence = sentence_in_progress + before_bracket_sentences[0]
                                     noisy_sentences.append(noisy_sentence)
                                                                                        
-                                del before_bracket_sentences[0]
+                                    del before_bracket_sentences[0]
+                                        
+                                    if len(before_bracket_sentences) >= 1:                                
+                                        del before_bracket_sentences[-1]
                                     
-                                if len(before_bracket_sentences) >= 1:                                
-                                    del before_bracket_sentences[-1]
-                                
-                                for sentence in before_bracket_sentences:
-                                    clean_sentences.append(sentence)
+                                    for sentence in before_bracket_sentences:
+                                        clean_sentences.append(sentence)
                                     
-                                if noisy_sentence_active == True:
+                                elif noisy_sentence_active:
                                         
                                     del rest_of_the_line_sentences[0]
                                     
@@ -207,7 +208,7 @@ for file in paths:
                                     for sentence in rest_of_the_line_sentences:
                                         clean_sentences.append(sentence)
 
-                                sentence_in_progress_is_noisy = False
+                                    sentence_in_progress_is_noisy = False
                             else:
                                 before_single_bracket = rest_of_the_line[:single_noisy_match.start()]
                                 after_single_bracket = rest_of_the_line[single_noisy_match.start():]
@@ -254,8 +255,8 @@ for file in paths:
                     
                 sentence_in_progress_is_noisy = True
    
-        print(len(clean_sentences))
-        print(len(noisy_sentences))
+        # print(len(clean_sentences))
+        # print(len(noisy_sentences))
     
        
     debugged_sentences[file] = clean_sentences    
@@ -263,13 +264,13 @@ for file in paths:
     
     for file, clean_sentences in debugged_sentences.items():
         
-        print("Clean sentences for file {} :  ".format(file) +"/n")
+        print("Clean sentences for file {} :  ".format(file))
         for clean_sentence in clean_sentences:
             print (clean_sentence.strip())
             
     for file, noisy_sentences in all_noisy_sentences.items():
         
-        print("Noisy sentences for file {} ".format(file) + "/n")
+        print("Noisy sentences for file {} ".format(file))
         for noisy_sentence in noisy_sentences:
             print (noisy_sentence.strip())            
         
