@@ -56,8 +56,6 @@ for file in paths:
                 all_lines += line + " "
                 
     noisy_brackets= []
-    double_brackets = False
-    noisy_line = False
     
     double_bracket_matches = re.finditer(pattern, all_lines)
       
