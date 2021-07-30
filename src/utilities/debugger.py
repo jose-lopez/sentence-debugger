@@ -21,7 +21,7 @@ def get_end_noisy_bracket(all_lines, noisy_brackets, bracket):
     end_bracket = None
     from_bracket = bracket
 
-    while not from_bracket == len(noisy_brackets) - 1:
+    while  from_bracket < len(noisy_brackets) - 1:
         to_bracket =  from_bracket + 1       
         end_bracket = noisy_brackets[to_bracket]
         text_in_between = all_lines[noisy_brackets[from_bracket].end():end_bracket.start()]
@@ -84,7 +84,7 @@ for file in paths:
         actual_coordinate = 0
         bracket = 0
               
-        while not bracket == noisy_double_brackets - 1:
+        while bracket < noisy_double_brackets - 1:
             
             start_noisy_bracket = noisy_brackets[bracket].start()
             before_start_bracket = all_lines[actual_coordinate:start_noisy_bracket]
@@ -124,14 +124,33 @@ for file in paths:
                                                       
                 actual_coordinate += len(noisy_sentence) + 1
                 noisy_sentences.append(noisy_sentence)
+                
+            bracket  = next_bracket  
+        
+        else: # Processing the last double bracket
+            end_noisy_bracket = noisy_brackets[bracket].end()
+            after_end_bracket = all_lines[end_noisy_bracket:]
+            after_end_bracket_sentences = re.split('\.', after_end_bracket)
             
-            if next_bracket == noisy_double_brackets - 1:
-                del after_end_bracket_sentences[0]                                        
+            if actual_coordinate < end_noisy_bracket:
+                start_noisy_bracket = noisy_brackets[bracket].start()
+                before_start_bracket = all_lines[actual_coordinate:start_noisy_bracket]
+                before_start_bracket_sentences = re.split('\.', before_start_bracket)
+                                 
+                noisy_sentence = before_start_bracket_sentences[-1] + all_lines[start_noisy_bracket:end_noisy_bracket] +  after_end_bracket_sentences[0]
+                noisy_sentences.append(noisy_sentence)
+                
+                if len(before_start_bracket_sentences) > 1:                                
+                    del before_start_bracket_sentences[-1]
+                    for sentence in before_start_bracket_sentences:
+                        if not sentence.isspace():
+                            clean_sentences.append(sentence)
+            
+            if len(after_end_bracket_sentences)  > 1: 
+                del after_end_bracket_sentences[0] 
                 for sentence in after_end_bracket_sentences:
                     if not sentence.isspace():
-                        clean_sentences.append(sentence) 
-                            
-            bracket  = next_bracket    
+                        clean_sentences.append(sentence)
        
     debugged_sentences[file] = clean_sentences   
     all_noisy_sentences[file] = noisy_sentences
