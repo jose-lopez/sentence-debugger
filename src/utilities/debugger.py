@@ -48,10 +48,10 @@ for file in paths:
     all_lines = ''
     
     for line in lines:
-        
+                
         if not line == "\n":
-            line = line.replace("\n", "").strip()
-            
+            line = line.replace("\n", "").strip()   
+                            
             if line.endswith('-'):
                 all_lines += line.strip('-')
             else:
@@ -81,13 +81,13 @@ for file in paths:
         
     else: # For a set of lines (a file) with at least a noisy double bracket  
         
-        actual_coordinate = 0
+        current_coordinate = 0
         bracket = 0
               
         while bracket < noisy_double_brackets - 1:
             
             start_noisy_bracket = noisy_brackets[bracket].start()
-            before_start_bracket = all_lines[actual_coordinate:start_noisy_bracket]
+            before_start_bracket = all_lines[current_coordinate:start_noisy_bracket]
                
             next_bracket, end_bracket = get_end_noisy_bracket(all_lines, noisy_brackets, bracket)
             
@@ -105,7 +105,7 @@ for file in paths:
                 
             if bracket == 0:
                         
-                actual_coordinate += end_noisy_bracket + len(after_end_bracket_sentences[0]) + 1                
+                current_coordinate += end_noisy_bracket + len(after_end_bracket_sentences[0]) + 1                
                 del before_start_bracket_sentences[-1]
                 
                 noisy_sentences.append(noisy_sentence)
@@ -120,9 +120,9 @@ for file in paths:
                     for sentence in before_start_bracket_sentences:
                         if not sentence.isspace():
                             clean_sentences.append(sentence)
-                            actual_coordinate += len(sentence) + 1
+                            current_coordinate += len(sentence) + 1
                                                       
-                actual_coordinate += len(noisy_sentence) + 1
+                current_coordinate += len(noisy_sentence) + 1
                 noisy_sentences.append(noisy_sentence)
                 
             bracket  = next_bracket  
@@ -132,9 +132,9 @@ for file in paths:
             after_end_bracket = all_lines[end_noisy_bracket:]
             after_end_bracket_sentences = re.split('\.', after_end_bracket)
             
-            if actual_coordinate < end_noisy_bracket:
+            if current_coordinate < end_noisy_bracket:
                 start_noisy_bracket = noisy_brackets[bracket].start()
-                before_start_bracket = all_lines[actual_coordinate:start_noisy_bracket]
+                before_start_bracket = all_lines[current_coordinate:start_noisy_bracket]
                 before_start_bracket_sentences = re.split('\.', before_start_bracket)
                                  
                 noisy_sentence = before_start_bracket_sentences[-1] + all_lines[start_noisy_bracket:end_noisy_bracket] +  after_end_bracket_sentences[0]
