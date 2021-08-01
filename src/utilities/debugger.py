@@ -172,12 +172,12 @@ for file, clean_sentences in debugged_sentences.items():
     
     print("Clean sentences for file {} :  (Total:{}/{})".format(file,len(clean_sentences),amount_clean_sentences))
     for clean_sentence in clean_sentences:
-        print (clean_sentence.strip())
+        print (clean_sentence.strip() + ".")
         
 for file, noisy_sentences in all_noisy_sentences.items():
     
     print("Noisy sentences for file {} :  (Total:{}/{}) ".format(file,len(noisy_sentences),amount_noisy_sentences))
     for noisy_sentence in noisy_sentences:
-        print (noisy_sentence.strip())            
+        print (noisy_sentence.strip() + ".")            
         
                 
