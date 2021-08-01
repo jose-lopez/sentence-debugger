@@ -88,6 +88,7 @@ for file in paths:
             start_noisy_bracket = noisy_brackets[bracket].start()
             before_start_bracket = all_lines[current_coordinate:start_noisy_bracket]
                
+            # Getting the end double noisy bracket for the noisy sentence in progress and the next noisy bracket ahead
             next_bracket, end_bracket = get_end_noisy_bracket(all_lines, noisy_brackets, bracket)
             
             end_noisy_bracket = end_bracket.end()
@@ -160,22 +161,22 @@ amount_clean_sentences= 0
 amount_noisy_sentences = 0
 
 for file, clean_sentences in debugged_sentences.items():
-    amount_clean_sentences = len(clean_sentences)
+    amount_clean_sentences += len(clean_sentences)
 
 for file, noisy_sentences in all_noisy_sentences.items():
-    amount_noisy_sentences = len(noisy_sentences)
+    amount_noisy_sentences += len(noisy_sentences)
 
 total_sentences = amount_clean_sentences + amount_noisy_sentences
     
 for file, clean_sentences in debugged_sentences.items():
     
-    print("Clean sentences for file {} :  (Total:{}/{})".format(file,len(clean_sentences),total_sentences))
+    print("Clean sentences for file {} :  (Total:{}/{})".format(file,len(clean_sentences),amount_clean_sentences))
     for clean_sentence in clean_sentences:
         print (clean_sentence.strip())
         
 for file, noisy_sentences in all_noisy_sentences.items():
     
-    print("Noisy sentences for file {} :  (Total:{}/{}) ".format(file,len(noisy_sentences),total_sentences))
+    print("Noisy sentences for file {} :  (Total:{}/{}) ".format(file,len(noisy_sentences),amount_noisy_sentences))
     for noisy_sentence in noisy_sentences:
         print (noisy_sentence.strip())            
         
