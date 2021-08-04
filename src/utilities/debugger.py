@@ -173,7 +173,7 @@ def debugger(files):
                         if not sentence.isspace():
                             clean_sentences.append(sentence)
         # Checking the set of clean sentences
-        # check_clean(clean_sentences, noisy_sentences)
+        check_clean(clean_sentences, noisy_sentences)
         
         # Updating the corpus with a new processed file           
         corpus_file["clean_sentences"] = clean_sentences
