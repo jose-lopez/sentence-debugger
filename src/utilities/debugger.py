@@ -188,8 +188,8 @@ def debugger(files):
         
         print("Processing corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
    
-    print("Sorting the corpus' files based on index of noise")    
-    # Sorting the corpus in descending order based on the noise rate    
+    print("Sorting the corpus' files based on the index of noise")    
+    # Sorting the corpus in descending order based on the index of noise  
     corpus.sort(key=lambda x: x["noise_index"], reverse=True) 
        
     return corpus
