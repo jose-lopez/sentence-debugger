@@ -34,20 +34,24 @@ def get_end_noisy_bracket(all_lines, noisy_brackets, bracket):
 """ 
 A method to ensure non noisy sentences in the clean sentences set.
 This happens when there are sentences in a file with noisy patterns
-not embraced in double brackets. 
+not embraced in double brackets (strange noisy sentences). 
 """
-def check_clean(clean_sentences, noisy_sentences):
-    index = 0
-    to_delete = []
+def get_strange(clean_sentences, noisy_sentences):
+    strange_sentences = []
     for sentence in clean_sentences:
-        if re.search("¯+|˘+|\d+|⏓+|–+|-|⏑+", sentence):
-            to_delete.append(index)
-        index += 1 
-    for item in to_delete:
-        noisy_sentences.append(clean_sentences[item]) 
-        del clean_sentences[item]
-                                 
-    return len(to_delete)
+        if re.search("¯+|˘+|⏓+|–+|-|⏑+|\.\d+\.", sentence):
+            noisy_sentences.append(sentence) 
+            clean_sentences.remove(sentence)
+            strange_sentences.append(sentence)
+    return strange_sentences
+
+""" A method to get curated clean senteces. """
+def get_curated(clean_sentences):
+    curated_sentences = []
+    for sentence in clean_sentences:
+        if re.search("\[[^\]]+\]", sentence):            
+            curated_sentences.append(sentence)
+    return curated_sentences
 
 """ Building the sets of clean and noisy sentences contained in the corpus"""
 def debugger(files):   
@@ -173,21 +177,25 @@ def debugger(files):
                         if not sentence.isspace():
                             clean_sentences.append(sentence)
                             
-        # Checking the set of clean sentences
-        # check_clean(clean_sentences, noisy_sentences)
+        # Moving strange noisy sentences from the set of clean sentences
+        strange_sentences = get_strange(clean_sentences, noisy_sentences)
         
-        # Updating the corpus with a new processed file           
+        # Defining the set of clean sentences that has been curated
+        curated_sentences = get_curated(clean_sentences)
+        
+        # Setting a new processed corpus file      
         corpus_file["clean_sentences"] = clean_sentences
         corpus_file["noisy_sentences"] = noisy_sentences
+        corpus_file["strange_sentences"] = strange_sentences
+        corpus_file["curated_sentences"] = curated_sentences        
         corpus_file["size"] = len(clean_sentences) + len(noisy_sentences)
-        corpus_file["size_clean"] = len(clean_sentences)
-        corpus_file["size_noisy"] = len(noisy_sentences)
-        corpus_file["noise_rate"] = round(corpus_file["size_noisy"]/corpus_file["size"], 3)
+        corpus_file["noise_rate"] = round(len(noisy_sentences)/corpus_file["size"], 3)
         corpus_file["noise_index"] = round(noisy_double_brackets/corpus_file["size"], 3)        
-        
+                
+        # Updating the corpus with a new processed file
         corpus.append(copy.deepcopy(corpus_file))
         
-        print("Processing corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
+        print("Processed corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
    
     print("Sorting the corpus' files based on the index of noise")    
     # Sorting the corpus in descending order based on the index of noise  
@@ -197,11 +205,12 @@ def debugger(files):
 
 """ reporting a set of sentences """
 def report_sentences(sentences, path):
-    file = open(
-            path, 'w', encoding="utf8")
-    for sentence in sentences:
-        file.write(sentence.strip() + "." + "\n")
-    file.close()
+    if len(sentences) > 0:
+        file = open(
+                path, 'w', encoding="utf8")
+        for sentence in sentences:
+            file.write(sentence.strip() + "." + "\n")
+        file.close()
     
 """ reporting the noise related with each file in the corpus """    
 def report_noise_rate(corpus, path):
@@ -223,24 +232,34 @@ if __name__ == '__main__':
     corpus = root + "corpus/"
     path_report = root + "report/"
     path_clean_sentences = root + "clean/"
-    path_noisy_sentences = root + "noisy/"     
+    path_noisy_sentences = root + "noisy/"
+    path_strange_sentences = root + "strange/"
+    path_curated_sentences = root + "curated/"
+         
     if not path.exists(path_report):
         os.mkdir(path_report)
     if not path.exists(path_clean_sentences):        
         os.mkdir(path_clean_sentences)
         os.mkdir(path_noisy_sentences)
+        os.mkdir(path_strange_sentences)
+        os.mkdir(path_curated_sentences)        
             
     files = [str(x) for x in Path(corpus).glob("**/*.txt")]
     
     # Debugging the corpus and measuring the related files' noise
     corpus = debugger(files)
     
-    # Reporting the clean and noisy sentences in the corpus
+    # Reporting the different set of sentences obtained from the corpus
     for file in corpus:
-        path_file =  path_clean_sentences + file["name"]
+        file_name = file["name"]
+        path_file =  path_clean_sentences + file_name
         report_sentences(file["clean_sentences"], path_file)
-        path_file =  path_noisy_sentences + file["name"]
+        path_file =  path_noisy_sentences + file_name
         report_sentences(file["noisy_sentences"], path_file)
+        path_file =  path_strange_sentences + file_name
+        report_sentences(file["strange_sentences"], path_file)
+        path_file =  path_curated_sentences + file_name
+        report_sentences(file["curated_sentences"], path_file)                  
         
     # Reporting the related files' noise
     report_noise_rate(corpus, path_report + "noisy_rate.txt")
