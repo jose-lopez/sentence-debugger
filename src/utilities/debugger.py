@@ -30,6 +30,7 @@ def get_end_noisy_bracket(all_lines, noisy_brackets, bracket):
             from_bracket += 1    
                 
     return (to_bracket, end_bracket)
+
 """ 
 A method to ensure non noisy sentences in the clean sentences set.
 This happens when there are sentences in a file with noisy patterns
@@ -47,6 +48,7 @@ def check_clean(clean_sentences, noisy_sentences):
         del clean_sentences[item]
                                  
     return len(to_delete)
+
 """ Building the sets of clean and noisy sentences contained in the corpus"""
 def debugger(files):   
 
@@ -185,26 +187,13 @@ def debugger(files):
         corpus.append(copy.deepcopy(corpus_file))
         
         print("Processing corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
-    """
-    for file in corpus:
-        clean = file["clean_sentences"]
-        noisy = file["noisy_sentences"]
-        print("Before sorting:")
-        print("clean: {}".format(len(clean)), "noisy: {}".format(len(noisy)))
-    """
    
     print("Sorting the corpus' files based on index of noise")    
     # Sorting the corpus in descending order based on the noise rate    
     corpus.sort(key=lambda x: x["noise_index"], reverse=True) 
-    """
-    for file in corpus:
-        clean = file["clean_sentences"]
-        noisy = file["noisy_sentences"]
-        print("After sorting:")
-        print("clean: {}".format(len(clean)), "noisy: {}".format(len(noisy)))
-    """ 
        
     return corpus
+
 """ reporting a set of sentences """
 def report_sentences(sentences, path):
     file = open(
@@ -212,6 +201,7 @@ def report_sentences(sentences, path):
     for sentence in sentences:
         file.write(sentence.strip() + "." + "\n")
     file.close()
+    
 """ reporting the noise related with each file in the corpus """    
 def report_noise_rate(corpus, path):
     # print(len(corpus))
