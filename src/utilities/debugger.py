@@ -172,6 +172,7 @@ def debugger(files):
                     for sentence in after_end_bracket_sentences:
                         if not sentence.isspace():
                             clean_sentences.append(sentence)
+                            
         # Checking the set of clean sentences
         # check_clean(clean_sentences, noisy_sentences)
         
