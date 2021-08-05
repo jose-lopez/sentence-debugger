@@ -202,7 +202,7 @@ def debugger(files):
     print("Sorting the corpus' files based on the index of noise......." + "\n")    
     # Sorting the corpus in descending order based on the index of noise  
     corpus.sort(key=lambda x: x["noise_index"], reverse=True)
-    time.sleep(3) 
+    time.sleep(3)  # To see on console what is happening.
        
     return corpus
 
@@ -249,7 +249,7 @@ if __name__ == '__main__':
     
     # Reporting the different set of sentences and the noise measures.
     print("Reporting the clean, noisy, strange and curated sentences......" + "\n")
-    time.sleep(2)
+    time.sleep(2) # To see on console what is happening.
     for file in corpus:
         file_name = "/" + file["name"]
         for folder in folders:            
@@ -259,7 +259,7 @@ if __name__ == '__main__':
                 report_sentences(file[folder], file_path)
     else:
         print("Reporting the related files' noise measures......." + "\n")
-        time.sleep(4)
+        time.sleep(4) # To see on console what is happening.
         file_path =  root + folder + noise_file
         # Reporting the related files' noise measures.
         report_noise(corpus, file_path)
