@@ -11,6 +11,7 @@ import re
 import copy
 import os
 from os import path
+import time
 
 """" A Method to define the end noisy bracket for a noisy sentence."""
 def get_end_noisy_bracket(all_lines, noisy_brackets, bracket):
@@ -198,9 +199,10 @@ def debugger(files):
         
         print("Processing corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
    
-    print("Sorting the corpus' files based on the index of noise")    
+    print("Sorting the corpus' files based on the index of noise......." + "\n")    
     # Sorting the corpus in descending order based on the index of noise  
-    corpus.sort(key=lambda x: x["noise_index"], reverse=True) 
+    corpus.sort(key=lambda x: x["noise_index"], reverse=True)
+    time.sleep(3) 
        
     return corpus
 
@@ -246,6 +248,8 @@ if __name__ == '__main__':
     corpus = debugger(files)
     
     # Reporting the different set of sentences and the noise measures.
+    print("Reporting the clean, noisy, strange and curated sentences......" + "\n")
+    time.sleep(2)
     for file in corpus:
         file_name = "/" + file["name"]
         for folder in folders:            
@@ -254,6 +258,8 @@ if __name__ == '__main__':
                 # Reporting the sets of sentences
                 report_sentences(file[folder], file_path)
     else:
+        print("Reporting the related files' noise measures......." + "\n")
+        time.sleep(4)
         file_path =  root + folder + noise_file
         # Reporting the related files' noise measures.
         report_noise(corpus, file_path)
