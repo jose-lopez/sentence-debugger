@@ -184,15 +184,15 @@ def debugger(files):
         curated_sentences = get_curated(clean_sentences)
         
         # Setting a new processed corpus file      
-        corpus_file["clean_sentences"] = clean_sentences
-        corpus_file["noisy_sentences"] = noisy_sentences
-        corpus_file["strange_sentences"] = strange_sentences
-        corpus_file["curated_sentences"] = curated_sentences        
+        corpus_file["clean"] = clean_sentences
+        corpus_file["noisy"] = noisy_sentences
+        corpus_file["strange"] = strange_sentences
+        corpus_file["curated"] = curated_sentences        
         corpus_file["size"] = len(clean_sentences) + len(noisy_sentences)
         corpus_file["noise_rate"] = round(len(noisy_sentences)/corpus_file["size"], 3)
         corpus_file["noise_index"] = round(noisy_double_brackets/corpus_file["size"], 3)        
                 
-        # Updating the corpus with a new processed file
+        # Updating the processed corpus with a new processed file
         corpus.append(copy.deepcopy(corpus_file))
         
         print("Processed corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
@@ -213,7 +213,7 @@ def report_sentences(sentences, path):
         file.close()
     
 """ reporting the noise related with each file in the corpus """    
-def report_noise_rate(corpus, path):
+def report_noise(corpus, path):
     # print(len(corpus))
     report = open(
             path, 'w', encoding="utf8")
@@ -227,40 +227,33 @@ def report_noise_rate(corpus, path):
 """ Debugging the corpus and reporting the related files' noise """
 if __name__ == '__main__':
     
+    folders = ["clean", "noisy", "strange", "curated", "report"]
+    
     # root = "./corpus_greek_test/"
     root = "./ancient_greek_test/"    
-    corpus = root + "corpus/"
-    path_report = root + "report/"
-    path_clean_sentences = root + "clean/"
-    path_noisy_sentences = root + "noisy/"
-    path_strange_sentences = root + "strange/"
-    path_curated_sentences = root + "curated/"
-         
-    if not path.exists(path_report):
-        os.mkdir(path_report)
-    if not path.exists(path_clean_sentences):        
-        os.mkdir(path_clean_sentences)
-        os.mkdir(path_noisy_sentences)
-        os.mkdir(path_strange_sentences)
-        os.mkdir(path_curated_sentences)        
+    corpus = root + "corpus"
+    noise_file = "/noise_report.txt"
+    
+    for folder in folders:        
+        _path =  root + folder
+        if not path.exists(_path):
+            os.mkdir(_path)
             
     files = [str(x) for x in Path(corpus).glob("**/*.txt")]
     
     # Debugging the corpus and measuring the related files' noise
     corpus = debugger(files)
     
-    # Reporting the different set of sentences obtained from the corpus
+    # Reporting the different set of sentences and the noise measures.
     for file in corpus:
-        file_name = file["name"]
-        path_file =  path_clean_sentences + file_name
-        report_sentences(file["clean_sentences"], path_file)
-        path_file =  path_noisy_sentences + file_name
-        report_sentences(file["noisy_sentences"], path_file)
-        path_file =  path_strange_sentences + file_name
-        report_sentences(file["strange_sentences"], path_file)
-        path_file =  path_curated_sentences + file_name
-        report_sentences(file["curated_sentences"], path_file)                  
-        
-    # Reporting the related files' noise
-    report_noise_rate(corpus, path_report + "noisy_rate.txt")
+        file_name = "/" + file["name"]
+        for folder in folders:            
+            if not folder == "report":
+                file_path =  root + folder + file_name
+                # Reporting the sets of sentences
+                report_sentences(file[folder], file_path)
+            else:
+                file_path =  root + folder + noise_file
+                # Reporting the related files' noise measures.
+                report_noise(corpus, file_path)
                 
