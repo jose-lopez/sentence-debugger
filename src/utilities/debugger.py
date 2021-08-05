@@ -45,7 +45,7 @@ def get_strange(clean_sentences, noisy_sentences):
             strange_sentences.append(sentence)
     return strange_sentences
 
-""" A method to get curated clean senteces. """
+""" A method to get curated clean sentences. """
 def get_curated(clean_sentences):
     curated_sentences = []
     for sentence in clean_sentences:
@@ -252,8 +252,8 @@ if __name__ == '__main__':
                 file_path =  root + folder + file_name
                 # Reporting the sets of sentences
                 report_sentences(file[folder], file_path)
-            else:
-                file_path =  root + folder + noise_file
-                # Reporting the related files' noise measures.
-                report_noise(corpus, file_path)
+    else:
+        file_path =  root + folder + noise_file
+        # Reporting the related files' noise measures.
+        report_noise(corpus, file_path)
                 
