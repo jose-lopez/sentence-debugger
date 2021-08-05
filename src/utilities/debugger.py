@@ -195,7 +195,7 @@ def debugger(files):
         # Updating the processed corpus with a new processed file
         corpus.append(copy.deepcopy(corpus_file))
         
-        print("Processed corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
+        print("Processing corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
    
     print("Sorting the corpus' files based on the index of noise")    
     # Sorting the corpus in descending order based on the index of noise  
