@@ -194,6 +194,7 @@ def debugger(files):
                 
         # Updating the processed corpus with a new processed file
         corpus.append(copy.deepcopy(corpus_file))
+        corpus_file.clear()
         
         print("Processing corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
    
