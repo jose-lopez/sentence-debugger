@@ -28,10 +28,14 @@ Los indicadores recién descritos permiten generar reportes sobre los archivos d
 
 Para ejecutar el script: 
 
-1. Clonar el repo:
+1. Clone el repo:
 	
 	$ git clone https://github.com/jose-lopez/sentence-debugger
 
-2. Ejecutar el script:
+2. Cambie el directorio:
+
+	$ cd sentence-debugger
+
+3. Ejecute el script:
 
 	$ python3.9 ./src/utilities/debugger.py
