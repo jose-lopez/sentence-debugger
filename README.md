@@ -24,7 +24,7 @@ Tasa de ruido = (cant. oraciones ruidosas estándares + cant. oraciones ruidosas
 
 Índice de ruido = (cant. fragmentos ruidosos estándares + cant. oraciones ruidosas no estándares)/total cant. oraciones
 
-Los indicadores recién descritos permiten generar reportes sobre los archivos del corpus, ordenados según el grado de ruido que presenten.  Los reportes pueden accederse en ./report.
+Los indicadores recién descritos permiten generar reportes sobre los archivos del corpus, ordenados según el grado de ruido que presenten.  Los reportes pueden accederse en ./ancient_greek_test/report.
 
 Para ejecutar el script: 
 
