@@ -218,7 +218,6 @@ def report_noise(corpus, path):
     noise_index_file = "/noise_index.txt"
     file_path = path + noise_index_file  
     
-    # print("Sorting the corpus' files based on the index of noise......." + "\n")   
     # Sorting the corpus in descending order based on the index of noise  
     corpus.sort(key=lambda x: x["noise_index"], reverse=True)
     
@@ -234,7 +233,6 @@ def report_noise(corpus, path):
     print("....... done" + "\n")
     time.sleep(2)   
  
-    # print("Sorting the corpus' files based on the noise rate......." + "\n")    
     # Sorting the corpus in descending order based on the noise rate
     corpus.sort(key=lambda x: x["noise_rate"], reverse=True)
     
