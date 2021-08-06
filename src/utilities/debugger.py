@@ -211,7 +211,7 @@ def report_sentences(sentences, path):
             file.write(sentence.strip() + "." + "\n")
         file.close()
     
-""" reporting the noise related with each file in the corpus """    
+""" Reporting the noise related to each file in the corpus """    
 def report_noise(corpus, path):
     # print(len(corpus))
     noise_rate_file = "/noise_rate.txt"
