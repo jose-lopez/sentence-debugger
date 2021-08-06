@@ -1,41 +1,41 @@
-Sobre el propósito de este programa:
+About the debugger script:
 
-El presente programa recibe una colección de archivos en griego antiguo, cuyas oraciones han sido en buena medida recuperadas o etiquetadas como ruidosas (que tienen lagunas). Ya sea que se trate de palabras/frases recuperadas o ruidosas, las oraciones del caso incluyen dobles corchetes en los lugares correspondientes. A continuación un ejemplo:
+The debugger script receives a collection of files in ancient Greek, the sentences of which have been mostly recovered or labeled as noisy (which have gaps). Whether they are recovered or noisy words/phrases, the sentences include double brackets describing the related places. Here's an example:
 
 ⸤Κλ⸥υτοφόρμιγγες Δ[ιὸς ὑ-] ⸤ψιμέδοντος πα[ρθέ]νοι,⸥ [–⏑⏑ Πι]ερίδες [–] [–]ενυφαι[⏑⏑––] [–⏑⏑]ο?υς, ἵνα κ[––] [–⏑]γαίας Ἰσθμί[ας] [––⏑]ν, εὐβούλου ν?[⏑–] [–⏑ γαμ]βρὸν Νηρέ[ος] [⏑⏑–] νάσοιό τ' ἐϋ[⏑ ⏑ ]αν, ἔνθ?[–⏑–] –⏑⏑–⏑⏑–– –⏑⏑–⏑⏑–– ⸤ὦ Πέλοπος λιπαρᾶς νάσου θεόδματοι πύλαι⸥
 
-El objetivo aqui es procesar la totalidad de los archivos suministrados y generar como salida cuatro colecciones de archivos; cada una de ellas vinculada a versiones de cada archivo original. Las cuatro colecciones corresponden a oraciones: limpias, ruidosas, extrañas y recuperadas. Cada colección de archivos se guarda en carpetas con el mismo nombre, accesibles en ./ancient_greek_test/.
+The goal here is to process all the supplied files and produce four collections of files; each one linked to different versions of each one of the original files. The four collections produced correspond to the following sets of sentences: clean, noisy, strange and curated. Each collection of files is stored in folders with the same name and they are accessible in: ./ancient_greek_test/.
 
-Oraciones limpias: Corresponden éstas tanto a las oraciones completas sin restauración como a aquellas que han sido restauradas. 
+Clean sentences: These set includes only clean sentences both without restoration and those that have been restored.
 
-Oraciones ruidosas: Son oraciones cuyas lagunas han sido demarcadas en dobles corchetes. Para propósito de la programación se ha asumido que el marcado mencionado define el modo correcto de identificar las regiones ruidosas en una oración.
+Noisy sentences: They are noisy sentences whose gaps have been identified in double brackets. For programming purposes it has been assumed that the above standard markup defines the correct way to identify noisy regions in a sentence.
 
-Oraciones extrañas: Corresponden éstas oraciones a aquellos casos en los que una oración ruidosa no sigue el estándar de representación.
+Strange sentences: These sentences correspond to those ones in which a noisy sentence does not follow the standard way of representation.
 
-Oraciones curadas (restauradas): Se listan en estos archivos solo oraciones restauradas, libres en su totalidad de fragmentos ruidos.
+Curated (restored) sentences: Only restored sentences, free of noisy fragments, are listed in these files.
 
-Además de lo anterior, el script genera un par de indicadores, relacionados con el nivel de ruido de los archivos presentes en el corpus suministrado. Tales indicadores son:
+Beside the above, the debugger script generates a couple of indicators, related to the noise level of the files in the supplied corpus. These indicators are:
 
-Tasa de ruido: Refiere este indicador la proporción de oraciones ruidosas en un archivo, respecto de la totalidad de las mismas. En este caso han sido consideradas tanto las oraciones ruidosas que siguen el estándar como las que no.
+Noise rate: This indicator describes the proportion of noisy sentences in a file with respect to the total of them. This indicator includes both noisy sentences that follow the standard and the noisy sentences that do not.
 
-Tasa de ruido = (cant. oraciones ruidosas estándares + cant. oraciones ruidosas no estándares)/total cant. oraciones
+Noise rate = (standard noisy sentences + non standard noisy sentences)/sentences
 
-Índice de ruido: En este caso se procura medir el ruido en un archivo considerando la cantidad de fragmentos ruidosos presentes en sus oraciones. El indicador también es proporcional a la cantidad de oraciones ruidosas que no siguen el estándar. En el futuro, si la aplicación lo requiere, la cantidad de fragmentos no estándares serán debidamente medidos y el indicador debidamente modificado.
+Noise index: An indicator to measure the noise considering the amount of standard noisy fragments in a file and the number of non standard noisy sentences it includes.
 
-Índice de ruido = (cant. fragmentos ruidosos estándares + cant. oraciones ruidosas no estándares)/total cant. oraciones
+Index of noise = (standard noisy fragments + non standard noisy sentences)/sentences
 
-Los indicadores recién descritos permiten generar reportes sobre los archivos del corpus, ordenados según el grado de ruido que presenten.  Los reportes pueden accederse en ./ancient_greek_test/report.
+The indicators above allow the reporting of the corpus' files, ordered according to the degree of related noise. The reports can be accessed at ./ancient_greek_test/report.
 
-Para ejecutar el script: 
+Follow these steps to run the script: 
 
-1. Clone el repo:
+1. Clone the repo:
 	
 	$ git clone https://github.com/jose-lopez/sentence-debugger
 
-2. Cambie el directorio:
+2. Change directory:
 
 	$ cd sentence-debugger
 
-3. Ejecute el script:
+3. and run the script:
 
 	$ python3.9 ./src/utilities/debugger.py
