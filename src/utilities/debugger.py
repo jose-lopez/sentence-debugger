@@ -279,10 +279,9 @@ if __name__ == '__main__':
                 # Reporting the sets of sentences
                 report_sentences(file[folder], file_path)
     
-    else:
-        
-        time.sleep(4) # To see on console what is happening.
-        file_path =  root + folder
+    else:        
+
+        _path =  root + folder
         # Reporting the related files' noise measures.
-        report_noise(corpus, file_path)
+        report_noise(corpus, _path)
                 
