@@ -1,6 +1,6 @@
 Sobre el propósito de este programa:
 
-El presente programa desarrollado en Python, denominado debugger, recibe una colección de archivos en griego antiguo cuyas oraciones han sido en buena medida recuperadas, o etiquetadas como ruidosas (que tienen lagunas). Ya sea que se trate de palabras/frases recuperadas o ruidosas, las oraciones del caso incluyen dobles corchetes en los lugares correspondientes. A continuación un ejemplo:
+El presente programa recibe una colección de archivos en griego antiguo, cuyas oraciones han sido en buena medida recuperadas o etiquetadas como ruidosas (que tienen lagunas). Ya sea que se trate de palabras/frases recuperadas o ruidosas, las oraciones del caso incluyen dobles corchetes en los lugares correspondientes. A continuación un ejemplo:
 
 ⸤Κλ⸥υτοφόρμιγγες Δ[ιὸς ὑ-] ⸤ψιμέδοντος πα[ρθέ]νοι,⸥ [–⏑⏑ Πι]ερίδες [–] [–]ενυφαι[⏑⏑––] [–⏑⏑]ο?υς, ἵνα κ[––] [–⏑]γαίας Ἰσθμί[ας] [––⏑]ν, εὐβούλου ν?[⏑–] [–⏑ γαμ]βρὸν Νηρέ[ος] [⏑⏑–] νάσοιό τ' ἐϋ[⏑ ⏑ ]αν, ἔνθ?[–⏑–] –⏑⏑–⏑⏑–– –⏑⏑–⏑⏑–– ⸤ὦ Πέλοπος λιπαρᾶς νάσου θεόδματοι πύλαι⸥
 
