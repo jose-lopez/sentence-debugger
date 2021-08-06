@@ -280,7 +280,7 @@ if __name__ == '__main__':
                 report_sentences(file[folder], file_path)
     
     else:
-        # print("Reporting the related files' noise measures......." + "\n")
+        
         time.sleep(4) # To see on console what is happening.
         file_path =  root + folder
         # Reporting the related files' noise measures.
