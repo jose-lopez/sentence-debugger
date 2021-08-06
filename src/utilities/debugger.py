@@ -188,21 +188,17 @@ def debugger(files):
         corpus_file["clean"] = clean_sentences
         corpus_file["noisy"] = noisy_sentences
         corpus_file["strange"] = strange_sentences
-        corpus_file["curated"] = curated_sentences        
-        corpus_file["size"] = len(clean_sentences) + len(noisy_sentences)
-        corpus_file["noise_rate"] = round(len(noisy_sentences)/corpus_file["size"], 3)
-        corpus_file["noise_index"] = round(noisy_double_brackets/corpus_file["size"], 3)        
+        corpus_file["curated"] = curated_sentences
+        len_sentences =  len(clean_sentences) + len(noisy_sentences) +  len(strange_sentences)
+        corpus_file["noise_rate"] = round((len(noisy_sentences) + len(strange_sentences))/len_sentences, 5)
+        corpus_file["noise_index"] = round((noisy_double_brackets + len(strange_sentences))/len_sentences, 5)        
                 
         # Updating the processed corpus with a new processed file
         corpus.append(copy.deepcopy(corpus_file))
         corpus_file.clear()
         
-        print("Processing corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")
-   
-    print("Sorting the corpus' files based on the index of noise......." + "\n")    
-    # Sorting the corpus in descending order based on the index of noise  
-    corpus.sort(key=lambda x: x["noise_index"], reverse=True)
-    time.sleep(3)  # To see on console what is happening.
+        print("Processing corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")  
+
        
     return corpus
 
@@ -218,14 +214,41 @@ def report_sentences(sentences, path):
 """ reporting the noise related with each file in the corpus """    
 def report_noise(corpus, path):
     # print(len(corpus))
+    noise_rate_file = "/noise_rate.txt"
+    noise_index_file = "/noise_index.txt"
+    file_path = path + noise_index_file  
+    
+    # print("Sorting the corpus' files based on the index of noise......." + "\n")   
+    # Sorting the corpus in descending order based on the index of noise  
+    corpus.sort(key=lambda x: x["noise_index"], reverse=True)
+    
+    print("Reporting the corpus' files order based on the index of noise......." + "\n")     
+    time.sleep(2)  # To see on console what is happening. 
     report = open(
-            path, 'w', encoding="utf8")
+            file_path, 'w', encoding="utf8")    
     report.write("File:" + "\t" + "\t" + "\t" + "\t" + "Noise rate:" + "\t" + "Noise index:" + "\n") 
-    print("File:" + "\t" + "\t" + "\t" + "\t" + "Noise rate:" + "\t" + "Noise index:" + "\n")     
+
     for file in corpus:
         report.write(file["name"] + "\t" + "\t" + str(file["noise_rate"]) + "\t" + "\t" + str(file["noise_index"]) + "\n")
-        print(file["name"] + "\t" + "\t" + str(file["noise_rate"]) + "\t" + "\t" + str(file["noise_index"]) + "\n")
     report.close()
+    print("....... done" + "\n")
+    time.sleep(2)   
+ 
+    # print("Sorting the corpus' files based on the noise rate......." + "\n")    
+    # Sorting the corpus in descending order based on the noise rate
+    corpus.sort(key=lambda x: x["noise_rate"], reverse=True)
+    
+    file_path = path + noise_rate_file
+    
+    print("Reporting the corpus' files order based on the rate of noise......." + "\n")
+    time.sleep(2)
+    report = open(
+            file_path, 'w', encoding="utf8")    
+    report.write("File:" + "\t" + "\t" + "\t" + "\t" + "Noise rate:" + "\t" + "Noise index:" + "\n") 
+    for file in corpus:
+        report.write(file["name"] + "\t" + "\t" + str(file["noise_rate"]) + "\t" + "\t" + str(file["noise_index"]) + "\n")
+    report.close()
+    print("....... done" + "\n")         
         
 """ Debugging the corpus and reporting the related files' noise """
 if __name__ == '__main__':
@@ -257,10 +280,11 @@ if __name__ == '__main__':
                 file_path =  root + folder + file_name
                 # Reporting the sets of sentences
                 report_sentences(file[folder], file_path)
+    
     else:
-        print("Reporting the related files' noise measures......." + "\n")
+        # print("Reporting the related files' noise measures......." + "\n")
         time.sleep(4) # To see on console what is happening.
-        file_path =  root + folder + noise_file
+        file_path =  root + folder
         # Reporting the related files' noise measures.
         report_noise(corpus, file_path)
                 
