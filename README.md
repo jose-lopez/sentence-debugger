@@ -4,7 +4,7 @@ El presente programa desarrollado en Python, denominado debugger, recibe una col
 
 ⸤Κλ⸥υτοφόρμιγγες Δ[ιὸς ὑ-] ⸤ψιμέδοντος πα[ρθέ]νοι,⸥ [–⏑⏑ Πι]ερίδες [–] [–]ενυφαι[⏑⏑––] [–⏑⏑]ο?υς, ἵνα κ[––] [–⏑]γαίας Ἰσθμί[ας] [––⏑]ν, εὐβούλου ν?[⏑–] [–⏑ γαμ]βρὸν Νηρέ[ος] [⏑⏑–] νάσοιό τ' ἐϋ[⏑ ⏑ ]αν, ἔνθ?[–⏑–] –⏑⏑–⏑⏑–– –⏑⏑–⏑⏑–– ⸤ὦ Πέλοπος λιπαρᾶς νάσου θεόδματοι πύλαι⸥
 
-El objetivo aqui es procesar la totalidad de los archivos suministrados y generar como salida cuatro colecciones de archivos; cada una de ellas vinculada a versiones de cada archivo original. Las cuatro colecciones corresponden a oraciones: limpias, ruidosas, extrañas y recuperadas. Cada colección de archivos se guarda en carpetas con el mismo nombre.
+El objetivo aqui es procesar la totalidad de los archivos suministrados y generar como salida cuatro colecciones de archivos; cada una de ellas vinculada a versiones de cada archivo original. Las cuatro colecciones corresponden a oraciones: limpias, ruidosas, extrañas y recuperadas. Cada colección de archivos se guarda en carpetas con el mismo nombre, accesibles en ./ancient_greek_test/.
 
 Oraciones limpias: Corresponden éstas tanto a las oraciones completas sin restauración como a aquellas que han sido restauradas. 
 
