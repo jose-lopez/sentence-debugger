@@ -10,7 +10,7 @@ Clean sentences: These set includes only clean sentences both without restoratio
 
 Noisy sentences: They are noisy sentences whose gaps have been identified in double brackets. For programming purposes it has been assumed that the above standard markup option defines the correct way to identify noisy regions in a sentence.
 
-Strange sentences: These sentences correspond to those ones in which a noisy sentence does not follow the standard way of representation.
+Strange sentences: These sentences correspond to those ones in which a noisy region does not follow the standard way of representation.
 
 Curated (restored) sentences: Only restored sentences, free of noisy fragments, are listed in these files.
 
