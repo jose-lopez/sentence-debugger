@@ -40,7 +40,7 @@ not embraced in double brackets (strange noisy sentences).
 def get_strange(clean_sentences, noisy_sentences):
     strange_sentences = []
     for sentence in clean_sentences:
-        if re.search("¯+|˘+|⏓+|–+|-|⏑+|\.\d+\.", sentence):
+        if re.search("¯+|˘+|⏓+|-+|⏑+|\.\d+|—+", sentence):
             noisy_sentences.append(sentence) 
             clean_sentences.remove(sentence)
             strange_sentences.append(sentence)
@@ -50,9 +50,18 @@ def get_strange(clean_sentences, noisy_sentences):
 def get_curated(clean_sentences):
     curated_sentences = []
     for sentence in clean_sentences:
-        if re.search("\[[^\]]+\]", sentence):            
+        if re.search("\[[^\]]+\]|⸤[^⸥]+⸥", sentence):            
             curated_sentences.append(sentence)
     return curated_sentences
+
+""" Removing all non Greek characters from a set of sentences. """
+def remove_non_greek(sentences):
+    greek_sentences = []       
+    for sentence in sentences:
+        sentence = re.sub(r"[a-zA-Z0-9(){}]","",sentence).strip()            
+        if not sentence == "":          
+            greek_sentences.append(sentence)
+    return greek_sentences
 
 """ Building the sets of clean and noisy sentences contained in the corpus"""
 def debugger(files):   
@@ -178,6 +187,12 @@ def debugger(files):
                         if not sentence.isspace():
                             clean_sentences.append(sentence)
                             
+        # removing all non greek characters from the clean sentences set
+        clean_sentences = remove_non_greek(clean_sentences)
+                
+        # removing all non greek characters from the noisy sentences set
+        noisy_sentences = remove_non_greek(noisy_sentences)
+                
         # Moving strange noisy sentences from the set of clean sentences
         strange_sentences = get_strange(clean_sentences, noisy_sentences)
         
