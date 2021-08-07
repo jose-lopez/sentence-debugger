@@ -4,7 +4,7 @@ The debugger script receives a collection of files in ancient Greek, the sentenc
 
 ⸤Κλ⸥υτοφόρμιγγες Δ[ιὸς ὑ-] ⸤ψιμέδοντος πα[ρθέ]νοι,⸥ [–⏑⏑ Πι]ερίδες [–] [–]ενυφαι[⏑⏑––] [–⏑⏑]ο?υς, ἵνα κ[––] [–⏑]γαίας Ἰσθμί[ας] [––⏑]ν, εὐβούλου ν?[⏑–] [–⏑ γαμ]βρὸν Νηρέ[ος] [⏑⏑–] νάσοιό τ' ἐϋ[⏑ ⏑ ]αν, ἔνθ?[–⏑–] –⏑⏑–⏑⏑–– –⏑⏑–⏑⏑–– ⸤ὦ Πέλοπος λιπαρᾶς νάσου θεόδματοι πύλαι⸥
 
-The goal here is to process all the supplied files and produce four collections of files; each one linked to different versions of each one of the original files. The four collections produced by the script correspond to the following sets of sentences: clean, noisy, strange and curated. Each collection of files is stored in folders with the same name and they are accessible at: ./ancient_greek_test/.
+The goal here is to process all the supplied files and produce four collections of new files; each one linked to different versions of each one of the original ones. The four collections produced by the script correspond to the following sets of sentences: clean, noisy, strange and curated. Each collection of files is stored in folders with the same name and they are accessible at: ./ancient_greek_test/.
 
 Clean sentences: These set includes only clean sentences both without restoration and those that have been restored.
 
