@@ -12,6 +12,7 @@ import copy
 import os
 from os import path
 import time
+import regex
 
 """" A Method to define the end noisy bracket for a noisy sentence."""
 def get_end_noisy_bracket(all_lines, noisy_brackets, bracket):
@@ -23,15 +24,27 @@ def get_end_noisy_bracket(all_lines, noisy_brackets, bracket):
         to_bracket =  from_bracket + 1       
         end_bracket = noisy_brackets[to_bracket]
         text_in_between = all_lines[noisy_brackets[from_bracket].end():end_bracket.start()]
-        text_in_between_sentences = re.split("\.", text_in_between)
-        if len(text_in_between_sentences) > 1:
-            end_bracket =  noisy_brackets[from_bracket]        
-            break
+        noisy_blocks = regex.findall("[¯˘⏓\-⏑\d—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}", text_in_between)
+        if len(noisy_blocks) == 0:
+            text_in_between_sentences = re.split("\.", text_in_between)
+            if len(text_in_between_sentences) > 1:
+                end_bracket =  noisy_brackets[from_bracket]        
+                break
+            else:
+                from_bracket += 1
         else:
-            from_bracket += 1    
+            # print([noisy_block for noisy_block in noisy_blocks], len(noisy_blocks))
+            from_bracket += 1     
                 
     return (to_bracket, end_bracket)
 
+""" Defining if a piece of text has noisy blocks """
+def noisy_blocks_in(text):
+    noisy_blocks = regex.findall("[¯˘⏓\-⏑\d—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}", text)
+    if noisy_blocks:
+        return True
+    else:
+        return False
 """ 
 A method to ensure non noisy sentences in the clean sentences set.
 This happens when there are sentences in a file with noisy patterns
@@ -40,7 +53,7 @@ not embraced in double brackets (strange noisy sentences).
 def get_strange(clean_sentences, noisy_sentences):
     strange_sentences = []
     for sentence in clean_sentences:
-        if re.search("¯+|˘+|⏓+|-+|⏑+|\.\d+|—+", sentence):
+        if noisy_blocks_in(sentence):
             noisy_sentences.append(sentence) 
             clean_sentences.remove(sentence)
             strange_sentences.append(sentence)
@@ -56,30 +69,40 @@ def get_curated(clean_sentences):
 
 """ Removing all non Greek characters from a set of sentences. """
 def remove_non_greek(sentences):
-    greek_sentences = []       
+    greek_sentences = []           
     for sentence in sentences:
-        sentence = re.sub(r"[a-zA-Z0-9(){}]","",sentence).strip()            
-        if not sentence == "":          
+        # ---- Removing non Greek characters --- #
+        # sentence = regex.sub(r'[—\.\-;a-zA-Z0-9\(\){}]+', '', sentence).strip()
+        # sentence = regex.sub(r'[^α-ωΑ-Ωἀ-Ὠἄ-ὤ\W\[\]]+', '', sentence).strip()
+        sentence = regex.sub(r'[⸐⸏?!\—〈〉"{}⸤⸥΄|Ϛݲ§ϛ♃5ᾱᾅὝᾂ̆ᾦ#Ἦ*ᾆ⟩ὋἎὒὮ′̣ϝὯἾ͵ῂüὬ⌋⌈‚•ä+̀ö&–ͅᾕë1͂ῲᾡἇἛἋGϠ¶%ῢ^ἊἯæᾇ\\2ᾁῡἚ̋/⌉Ὢß⌊Ἣ=ῗóΌ`3ï⌞⌟ᾲΆ65ϡ̈4∗Ὣq═òΈϞ○à7áΊᾒ‖~אϟΪϥ›\u200b⁄‹íé⋖ὊÍ9Ἲ̄8{ῧ}Üᾟᾍᾨ―ΉŕὟ⩹✶0Ώᾯᾥᾌ\x8d⟦⟧\x9a¦ᾬἻ£a⋇ῐ¬ÓbῚŒἿἏÉῌᾃ\x98°ΎῈÁ⨆�ç↑ạὛ⏔⏑̅✝ú\x9dᾺụᾢᾓᾘῼùÒSῠϙ─\x90לṕᾣô\x9cῸᾜḿ$⦵⊏ī\x9eֹ\x8eÌćÆ\x8fǁ⊻@ū÷Ҁ∾ῺìῪ\x8c\x81ᾮᾈèÿœῩῊ\x88⊤З♀⊙\xadÄÖᾞߤ⁑⸨\x8aḍ⫯∼źẂ⋆★Ῑᾩ‵ᾎý√⏝⏓⏕ṃ×ȳហḾti¿⥽⥼⊣⊔ӄẉ͎\u070eҏďĎ̠◻ᾰ\ue1c2rƑ̧\x7fេឲិតាỳӕῘLᾙΫẃ☾☿♂♄⊢⋃Ā±TMĹ€║̇čō”]', '', sentence)
+        # sentence = regex.sub(r'(\[\s*\])', '', sentence)        
+        num_of_words = len(regex.findall("[\p{L}\p{M}*]+", sentence))
+        
+        if num_of_words >= 2:  # Only sentences with two or more words        
             greek_sentences.append(sentence)
     return greek_sentences
 
 """ Building the sets of clean and noisy sentences contained in the corpus"""
-def debugger(files):   
-
+def debugger(files):       
     corpus_file = {}
     corpus = []
+    not_included_files = []
     pattern = "\[[^\]]+\]"
-    noisy_pattern = "¯+|˘+|\d+|\.+|⏓+|–+|-|⏑+"
+    noisy_pattern = "[¯˘⏓\-⏑\.\d—\s]+" 
+    processed_files = 0
     
     for file in files:
+        processed_files += 1
         with open(file, 'r', encoding="utf8") as f:
             lines = f.readlines()               
         file_name = file.split("/")[-1]
         corpus_file["name"] = file_name
         clean_sentences = []
         noisy_sentences = []
+        
+        print("Processing corpus file {}: {}/{}".format(file_name, processed_files, len(files)), "\n") 
             
-        # Building the sets of clean and noisy sentences for a set of lines (a file)
+        # --- Building the sets of clean and noisy sentences for a set of lines (a file) --- #
         all_lines = ''        
         for line in lines:
                     
@@ -91,7 +114,15 @@ def debugger(files):
                 else:
                     all_lines += line + " "
                     
-        # print(all_lines)                
+        # print(all_lines)   
+        
+        # Removing {} and () metadata blocks
+        all_lines = regex.sub(r'[{\(][〈〉,\s—\.\-\d;\p{L}]+[\)}]', '', all_lines).strip()
+        # Removing ASCII letters and some non Greek characters
+        all_lines = regex.sub(r'[;a-zA-Z\(\){}]+', '', all_lines)
+        
+        # print(all_lines)
+                                        
         noisy_brackets= []
         
         double_bracket_matches = re.finditer(pattern, all_lines)
@@ -105,9 +136,13 @@ def debugger(files):
         noisy_double_brackets = len(noisy_brackets)
                             
         if not noisy_brackets:
-        
-            line_sentences =  re.split('\.', all_lines)
-        
+            line_sentences = []
+            if not noisy_blocks_in(all_lines):
+                line_sentences =  re.split('\.', all_lines)
+            else:
+                print("There are not noisy double brackets in {} file".format(corpus_file["name"])) 
+                not_included_files.append(corpus_file["name"])
+                
             for sentence in line_sentences:
                 if not sentence.isspace():
                     clean_sentences.append(sentence) 
@@ -205,17 +240,18 @@ def debugger(files):
         corpus_file["strange"] = strange_sentences
         corpus_file["curated"] = curated_sentences
         len_sentences =  len(clean_sentences) + len(noisy_sentences) +  len(strange_sentences)
-        corpus_file["noise_rate"] = round((len(noisy_sentences) + len(strange_sentences))/len_sentences, 5)
-        corpus_file["noise_index"] = round((noisy_double_brackets + len(strange_sentences))/len_sentences, 5)        
+        if not len_sentences == 0:
+            corpus_file["noise_rate"] = round((len(noisy_sentences) + len(strange_sentences))/len_sentences, 5)
+            corpus_file["noise_index"] = round((noisy_double_brackets + len(strange_sentences))/len_sentences, 5)             
                 
         # Updating the processed corpus with a new processed file
-        corpus.append(copy.deepcopy(corpus_file))
+        if not len_sentences == 0:
+            corpus.append(copy.deepcopy(corpus_file))
         corpus_file.clear()
-        
-        print("Processing corpus file {}: {}/{}".format(file_name, len(corpus), len(files)), "\n")  
-
-       
-    return corpus
+    
+    print("Total of not included files: {} / {}".format(len(not_included_files), len(files)) + "\n")   
+    
+    return (corpus, not_included_files)
 
 """ reporting a set of sentences """
 def report_sentences(sentences, path):
@@ -225,6 +261,20 @@ def report_sentences(sentences, path):
         for sentence in sentences:
             file.write(sentence.strip() + "." + "\n")
         file.close()
+        
+""" Reporting the rejected files"""
+def report_rejected(rejected, path):
+    rejected_path = path + "/not_included_files.txt"
+    if len(rejected) > 0:
+        not_included = open(
+                rejected_path, 'w', encoding="utf8")
+        
+        print("Reporting the set of not included corpus' files......." + "\n")     
+        for file in rejected:
+            not_included.write(file.strip() + "\n")
+        not_included.close()
+        time.sleep(2)  # To see on console what is happening. 
+        print("....... done")
     
 """ Reporting the noise related to each file in the corpus """    
 def report_noise(corpus, path):
@@ -269,9 +319,10 @@ if __name__ == '__main__':
     folders = ["clean", "noisy", "strange", "curated", "report"]
     
     # root = "./corpus_greek_test/"
+    # root = "./corpus_greek_first_debug/"
+    # root = "./corpus-eng/"
     root = "./ancient_greek_test/"    
-    corpus = root + "corpus"
-    noise_file = "/noise_report.txt"
+    corpus = root + "corpus"   
     
     for folder in folders:        
         _path =  root + folder
@@ -281,7 +332,8 @@ if __name__ == '__main__':
     files = [str(x) for x in Path(corpus).glob("**/*.txt")]
     
     # Debugging the corpus and measuring the related files' noise
-    corpus = debugger(files)
+    # Also getting the not included (yet) files
+    corpus, rejected = debugger(files)
     
     # Reporting the different set of sentences and the noise measures.
     print("Reporting the clean, noisy, strange and curated sentences......" + "\n")
@@ -299,4 +351,5 @@ if __name__ == '__main__':
         _path =  root + folder
         # Reporting the related files' noise measures.
         report_noise(corpus, _path)
+        report_rejected(rejected, _path)
                 
