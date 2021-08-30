@@ -1,2 +1,0 @@
-File:				Noise rate:	Noise index:
-001.txt		0.61538		1.15385

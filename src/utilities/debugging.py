@@ -52,6 +52,7 @@ if __name__ == '__main__':
         
         debug.write(all_lines)
         debug.close()
+        
         # Removing non Ancient Greek characters 
         # Using unicode blocks     
         # all_lines = regex.sub(r'[^\u0370–\u03FF\u1F00–\u1FFF,·\.\s\[\]]+', '', all_lines).strip() 
