@@ -117,11 +117,8 @@ def debugger(files):
 
         # Removing {} and () metadata blocks
         all_lines = regex.sub(r'[{\(][〈〉,\s—\.\-\d;\p{L}]+[\)}]', '', all_lines).strip()
-        # Removing ASCII letters and some non Greek characters
-        # all_lines = regex.sub(r'[\d;a-zA-Z\(\){}]+', '', all_lines)
-        all_lines = regex.sub(r'[\d;\(\){}]+', '', all_lines)
-        
-        print(all_lines)
+        # Removing ASCII letters and numbers and some non Greek characters
+        all_lines = regex.sub(r'[;a-zA-Z0-9(\){}]+', '', all_lines)        
         
         # print(all_lines)
                                         
