@@ -124,13 +124,7 @@ def debugger(files):
         noisy_brackets= []
         
         double_bracket_matches = re.finditer(pattern, all_lines)
-        """  
-        if double_bracket_matches:
-            for double_bracket in double_bracket_matches:
-                text_in_bracket = all_lines[double_bracket.start() + 1:double_bracket.end() - 1]
-                if re.search(noisy_pattern, text_in_bracket):
-                    noisy_brackets.append(double_bracket)  
-        """
+
         if double_bracket_matches:
             for double_bracket in double_bracket_matches:                
                 noisy_brackets.append(double_bracket)            
