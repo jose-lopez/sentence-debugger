@@ -2,7 +2,6 @@
 
 '''
 Created on 5 jul. 2021
-
 @author: jose-lopez
 '''
 from pathlib import Path
@@ -116,7 +115,7 @@ def debugger(files):
                     all_lines += line + " "
 
         # Removing {} and () metadata blocks
-        all_lines = regex.sub(r'[{\(][〈〉,\s—\.\-\d;\p{L}]+[\)}]', '', all_lines).strip()
+        all_lines = regex.sub(r'[{\(][<>〈〉,\s—\.\-\d;\p{L}]+[\)}]', '', all_lines).strip()
         # Removing ASCII letters and numbers and some non Greek characters
         all_lines = regex.sub(r'[;a-zA-Z0-9(\){}]+', '', all_lines)        
         
@@ -228,10 +227,10 @@ def debugger(files):
                             clean_sentences.append(sentence)
                             
         # removing all non greek characters from the clean sentences set
-        clean_sentences = remove_non_greek(clean_sentences)
+        # clean_sentences = remove_non_greek(clean_sentences)
                 
         # removing all non greek characters from the noisy sentences set
-        noisy_sentences = remove_non_greek(noisy_sentences)
+        # noisy_sentences = remove_non_greek(noisy_sentences)
                 
         # Moving strange noisy sentences from the set of clean sentences
         strange_sentences = get_strange(clean_sentences, noisy_sentences)
@@ -254,7 +253,7 @@ def debugger(files):
             corpus.append(copy.deepcopy(corpus_file))
         corpus_file.clear()
     
-    print("Total of not included files: {} / {}".format(len(not_included_files), len(files)) + "\n")   
+    print("Excluded files: {} / {}".format(len(not_included_files), len(files)) + "\n")   
     
     return (corpus, not_included_files)
 
@@ -357,4 +356,3 @@ if __name__ == '__main__':
         # Reporting the related files' noise measures.
         report_noise(corpus, _path)
         report_rejected(rejected, _path)
-                
