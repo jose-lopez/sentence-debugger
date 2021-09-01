@@ -13,7 +13,7 @@ import time
 import regex
 
 """" A Method to define the end noisy bracket for a noisy sentence."""
-def get_end_noisy_bracket(all_lines, noisy_brackets, bracket):
+def get_end_noisy_bracket(all_lines, noisy_brackets, bracket, noisy_pattern):
   
     end_bracket = None
     from_bracket = bracket
@@ -22,7 +22,7 @@ def get_end_noisy_bracket(all_lines, noisy_brackets, bracket):
         to_bracket =  from_bracket + 1       
         end_bracket = noisy_brackets[to_bracket]
         text_in_between = all_lines[noisy_brackets[from_bracket].end():end_bracket.start()]
-        noisy_blocks = regex.findall("[¯˘⏓\-⏑—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}", text_in_between)
+        noisy_blocks = regex.findall(noisy_pattern, text_in_between)
         if len(noisy_blocks) == 0:
             text_in_between_sentences = re.split("\.", text_in_between)
             if len(text_in_between_sentences) > 1:
@@ -38,8 +38,8 @@ def get_end_noisy_bracket(all_lines, noisy_brackets, bracket):
 
 """ Defining if a piece of text has noisy blocks """
 def noisy_blocks_in(text):
-    noisy_blocks = regex.findall("[¯˘⏓\-⏑\d—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}", text)
-    # [¯˘⏓\-⏑—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}
+    # The next line must be changed to detect just non Greek characters as noise !!
+    noisy_blocks = regex.findall("[¯˘⏓\-⏑—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}", text)
     if noisy_blocks:
         return True
     else:
@@ -86,9 +86,7 @@ def debugger(files):
     corpus_file = {}
     corpus = []
     not_included_files = []
-    # pattern = "\[[^\]]+\]"
-    pattern = "[¯˘⏓\-⏑—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}"
-    # noisy_pattern = "[¯˘⏓\-⏑\.\d—\s]+" 
+    noisy_pattern = "[¯˘⏓\-⏑—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}"
     processed_files = 0
     
     for file in files:
@@ -123,15 +121,13 @@ def debugger(files):
                                         
         noisy_brackets= []
         
-        double_bracket_matches = re.finditer(pattern, all_lines)
+        double_bracket_matches = re.finditer(noisy_pattern, all_lines)
 
         if double_bracket_matches:
             for double_bracket in double_bracket_matches:                
                 noisy_brackets.append(double_bracket)            
                     
-        noisy_double_brackets = len(noisy_brackets)
-        
-        # noisy_blocks = re.finditer("[¯˘⏓\-⏑\d—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}", all_lines)
+        noisy_double_brackets = len(noisy_brackets)  
                             
         if not noisy_brackets:
             line_sentences = []
@@ -156,7 +152,7 @@ def debugger(files):
                 before_start_bracket = all_lines[current_coordinate:start_noisy_bracket]
                    
                 # Getting the end double noisy bracket for the noisy sentence in progress and the next noisy bracket ahead
-                next_bracket, end_bracket = get_end_noisy_bracket(all_lines, noisy_brackets, bracket)
+                next_bracket, end_bracket = get_end_noisy_bracket(all_lines, noisy_brackets, bracket, noisy_pattern)
                 
                 end_noisy_bracket = end_bracket.end()
                 
