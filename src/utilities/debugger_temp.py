@@ -39,6 +39,7 @@ def get_end_noisy_block(all_lines, noisy_blocks, block, noisy_pattern):
 """ Defining if a piece of text has strange noisy blocks (useful to detect new noisy patterns) """
 def strange_noisy_blocks_in(text):
     # The next line must be changed to detect just non Greek characters as noise !!
+    # noisy_blocks_in_text = regex.findall("[¯˘⏓\-⏑—]+|(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}", text)
     noisy_blocks_in_text = regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.,·;'‘’\s\[\]⸤⸥]+", text)
     
     if noisy_blocks_in_text:
@@ -139,7 +140,14 @@ def debugger(files):
         length_noisy_blocks = len(noisy_blocks) 
                             
         if not noisy_blocks:            
-            line_sentences = []    
+            line_sentences = []
+            """
+            if strange_noisy_blocks_in(all_lines):
+                print("   There are non-standard noisy blocks in {} file".format(corpus_file["name"]) +"\n")
+                strange_noisy_blocks = get_strange_noisy_blocks_in(all_lines)
+                not_included_files.append((corpus_file["name"],strange_noisy_blocks))
+            else:
+            """        
             line_sentences =  re.split('\.', all_lines)   
             for sentence in line_sentences:
                 if not sentence.isspace():
