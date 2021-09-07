@@ -323,10 +323,9 @@ if __name__ == '__main__':
     
     folders = ["clean", "noisy", "strange", "curated", "report"]
     
-    root = "./corpus_greek_test/"
-    # root = "./corpus_greek_first_debug/"
+    # root = "./corpus_greek_test/"
     # root = "./corpus-eng/"
-    # root = "./ancient_greek_test/"    
+    root = "./ancient_greek_test/"    
     corpus = root + "corpus"   
     
     for folder in folders:        
