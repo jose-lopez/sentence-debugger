@@ -94,7 +94,7 @@ def debugger(files):
     corpus = []
     not_included_files = []
     # noisy_pattern = "[(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}|\[\s+\]"
-    noisy_pattern = "(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}|\[\s+\]|[¯˘⏓\-⏑—]+"
+    noisy_pattern = "(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}|\[\s+\]|[¯˘⏓\-⏑]+"
     
     processed_files = 0
     
@@ -126,7 +126,7 @@ def debugger(files):
         # Removing ASCII letters and numbers
         all_lines = regex.sub(r'[a-zA-Z0-9]+', '', all_lines)        
         
-        print(all_lines)
+        # print(all_lines)
                                         
         noisy_blocks= []
         

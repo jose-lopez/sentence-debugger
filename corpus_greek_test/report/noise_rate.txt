@@ -1,0 +1,5 @@
+File:				Noise rate:	Noise index:
+TLG0199.TXT-012.txt		1.0		81.0
+TLG0008.TXT-001.txt		0.04006		0.04487
+TLG0093.TXT-007.txt		0.0		0.0
+TLG0033.TXT-002.txt		0.0		0.0
