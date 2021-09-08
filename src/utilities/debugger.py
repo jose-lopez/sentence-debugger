@@ -325,7 +325,7 @@ if __name__ == '__main__':
     
     # root = "./corpus_greek_test/"
     # root = "./corpus-eng/"
-    root = "./ancient_greek_test/"    
+    root = "./texts/"    
     corpus = root + "corpus"   
     
     for folder in folders:        
