@@ -38,7 +38,7 @@ def get_end_noisy_block(all_lines, noisy_blocks, block, noisy_pattern):
 """ Defining if a piece of text has strange noisy blocks (useful to detect new noisy patterns) """
 def strange_noisy_blocks_in(text):
 
-    noisy_blocks_in_text = regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.,·\s\[\]⸤⸥]+", text)
+    noisy_blocks_in_text = regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.,·'\s\[\]⸤⸥]+", text)
     
     if noisy_blocks_in_text:
         return True
@@ -46,7 +46,7 @@ def strange_noisy_blocks_in(text):
         return False
     
 def get_strange_noisy_blocks_in(text):
-    return regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.,·;'‘’\s\[\]⸤⸥]+", text) 
+    return regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.·;'\s\[\]⸤⸥]+", text) 
    
 """ 
 A method to ensure non noisy sentences in the clean sentences set.
@@ -76,9 +76,9 @@ def remove_non_greek(sentences, full):
     for sentence in sentences:
         # ---- Removing non Greek characters --- #
         if full:
-            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.·;\s]", '', sentence)
+            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.·;'\s]", '', sentence)
         else:
-            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.·;\s\[\]⸤⸥]", '', sentence)
+            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.·;'\s\[\]⸤⸥]", '', sentence)
                  
         num_of_words = len(regex.findall("[\p{L}\p{M}*]+", sentence))
         
