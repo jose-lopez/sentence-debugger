@@ -31,15 +31,14 @@ def get_end_noisy_block(all_lines, noisy_blocks, block, noisy_pattern):
             else:
                 from_block += 1
         else:
-            # print([noisy_block for noisy_block in noisy_blocks], len(noisy_blocks))
             from_block += 1     
                 
     return (to_block, end_block)
 
 """ Defining if a piece of text has strange noisy blocks (useful to detect new noisy patterns) """
 def strange_noisy_blocks_in(text):
-    # The next line must be changed to detect just non Greek characters as noise !!
-    noisy_blocks_in_text = regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.,·;'‘’\s\[\]⸤⸥]+", text)
+
+    noisy_blocks_in_text = regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.,·\s\[\]⸤⸥]+", text)
     
     if noisy_blocks_in_text:
         return True
@@ -47,7 +46,8 @@ def strange_noisy_blocks_in(text):
         return False
     
 def get_strange_noisy_blocks_in(text):
-    return regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.,·;'‘’\s\[\]⸤⸥]+", text)    
+    return regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.,·;'‘’\s\[\]⸤⸥]+", text) 
+   
 """ 
 A method to ensure non noisy sentences in the clean sentences set.
 This happens when there are sentences in a file with noisy patterns
@@ -75,13 +75,11 @@ def remove_non_greek(sentences, full):
     greek_sentences = []           
     for sentence in sentences:
         # ---- Removing non Greek characters --- #
-        # sentence = regex.sub(r'[—\.\-;a-zA-Z0-9\(\){}]+', '', sentence).strip()
-        # sentence = regex.sub(r'[^α-ωΑ-Ωἀ-Ὠἄ-ὤ\W\[\]]+', '', sentence).strip()
         if full:
-            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.,·;'‘’\s]", '', sentence)
+            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.·;\s]", '', sentence)
         else:
-            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.,·;'‘’\s\[\]⸤⸥]", '', sentence)
-        # sentence = regex.sub(r'(\[\s*\])', '', sentence)        
+            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.·;\s\[\]⸤⸥]", '', sentence)
+                 
         num_of_words = len(regex.findall("[\p{L}\p{M}*]+", sentence))
         
         if num_of_words >= 2:  # Only sentences with two or more words        
@@ -93,7 +91,6 @@ def debugger(files):
     corpus_file = {}
     corpus = []
     not_included_files = []
-    # noisy_pattern = "[(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}|\[\s+\]"
     noisy_pattern = "(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}|\[\s+\]|[¯˘⏓\-⏑]+"
     
     processed_files = 0
@@ -281,7 +278,6 @@ def report_rejected(rejected, path):
     
 """ Reporting the noise related to each file in the corpus """    
 def report_noise(corpus, path):
-    # print(len(corpus))
     noise_rate_file = "/noise_rate.txt"
     noise_index_file = "/noise_index.txt"
     file_path = path + noise_index_file  
@@ -321,10 +317,8 @@ def report_noise(corpus, path):
 
 if __name__ == '__main__':
     
-    folders = ["clean", "noisy", "strange", "curated", "report"]
-    
-    # root = "./corpus_greek_test/"
-    # root = "./corpus-eng/"
+    folders = ["clean", "noisy", "strange", "curated", "report"]    
+
     root = "./texts/"    
     corpus = root + "corpus"   
     
