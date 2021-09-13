@@ -1,6 +1,6 @@
 About the debugger script:
 
-The debugger script receives a collection of files in ancient Greek, the sentences of which have been mostly recovered or labeled as noisy (which have gaps). Whether they are recovered or noisy sentences, they include words/phrases marked up in double brackets. Here's an example:
+The debugger script receives a collection of files in ancient Greek, the sentences of which have been mostly recovered or labeled as noisy (which have gaps). Whether they are recovered or noisy sentences, they include words/phrases sometimes marked up in double brackets. Here's an example:
 
 ⸤Κλ⸥υτοφόρμιγγες Δ[ιὸς ὑ-] ⸤ψιμέδοντος πα[ρθέ]νοι,⸥ [–⏑⏑ Πι]ερίδες [–] [–]ενυφαι[⏑⏑––] [–⏑⏑]ο?υς, ἵνα κ[––] [–⏑]γαίας Ἰσθμί[ας] [––⏑]ν, εὐβούλου ν?[⏑–] [–⏑ γαμ]βρὸν Νηρέ[ος] [⏑⏑–] νάσοιό τ' ἐϋ[⏑ ⏑ ]αν, ἔνθ?[–⏑–] –⏑⏑–⏑⏑–– –⏑⏑–⏑⏑–– ⸤ὦ Πέλοπος λιπαρᾶς νάσου θεόδματοι πύλαι⸥
 
@@ -8,7 +8,7 @@ The goal here is to process all the supplied files and produce four collections 
 
 Clean sentences: These set includes only clean sentences both without restoration and those that have been restored.
 
-Noisy sentences: They are noisy sentences whose gaps have been identified in double brackets. For programming purposes it has been assumed that the above standard markup option defines the correct way to identify noisy regions in a sentence.
+Noisy sentences: They are noisy sentences whose gaps have been identified and marked up with spetial characters like –⏑⏑. For programming purposes it has been assumed that the above standard markup option defines the correct way to identify noisy regions in a sentence.
 
 Strange sentences: These sentences correspond to those ones in which a noisy region does not follow the standard way of representation.
 
