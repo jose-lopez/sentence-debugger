@@ -55,7 +55,9 @@ if __name__ == '__main__':
         
         # Removing non Ancient Greek characters 
         # Using unicode blocks
-        all_lines = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.'\s]", '', all_lines)
+        all_lines = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s]", '', all_lines)
+        
+        all_lines = regex.sub("—", " ", all_lines)
 
         # Removing empty double brackets
         # all_lines = regex.sub(r'(\[\s*\])', '', all_lines)

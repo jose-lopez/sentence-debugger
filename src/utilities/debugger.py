@@ -76,9 +76,11 @@ def remove_non_greek(sentences, full):
     for sentence in sentences:
         # ---- Removing non Greek characters --- #
         if full:
-            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.'\s]", '', sentence)
+            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s]", '', sentence)
         else:
-            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.'\s\[\]⸤⸥]", '', sentence)
+            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s\[\]⸤⸥]", '', sentence)
+            
+        sentence = regex.sub("—", " ", sentence)
                  
         num_of_words = len(regex.findall("[\p{L}\p{M}*]+", sentence))
         
