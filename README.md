@@ -43,5 +43,6 @@ Follow these steps to run the script:
 	where "punctuation_marks" defines whether the punctuation marks ",;·" should be kept in the sentences or not.
 	
 	For instance:
+	
 	$ python3.9 ./src/utilities/debugger.py --punctuation_marks=yes
 	
