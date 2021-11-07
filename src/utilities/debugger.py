@@ -11,6 +11,7 @@ import os
 from os import path
 import time
 import regex
+import sys
 
 """" A Method to define the end noisy block for a noisy sentence."""
 def get_end_noisy_block(all_lines, noisy_blocks, block, noisy_pattern):
@@ -71,14 +72,20 @@ def get_curated(clean_sentences):
     return curated_sentences
 
 """ Removing all non Greek characters from a set of sentences. """
-def remove_non_greek(sentences, full):
+def remove_non_greek(sentences, full, punctuation_marks):
     greek_sentences = []           
     for sentence in sentences:
         # ---- Removing non Greek characters --- #
         if full:
-            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s]", '', sentence)
+            if punctuation_marks=="yes":
+                sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s,;·]", '', sentence)
+            else:
+                sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s]", '', sentence)
         else:
-            sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s\[\]⸤⸥]", '', sentence)
+            if punctuation_marks=="yes":
+                sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s,;·\[\]⸤⸥]", '', sentence)
+            else:
+                sentence = regex.sub("[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s\[\]⸤⸥]", '', sentence)
             
         sentence = regex.sub("—", " ", sentence)
                  
@@ -89,7 +96,16 @@ def remove_non_greek(sentences, full):
     return greek_sentences
 
 """ Building the sets of clean and noisy sentences contained in the corpus"""
-def debugger(files):       
+def debugger(files, argv): 
+    
+    name = argv.split("=")[0] # An argument defining that some punctuation marks must be kept (,;·)
+    value = argv.split("=")[1]
+    if name == "--punctuation_marks" and (value =="yes" or value == "no"):
+        punctuation_marks = value
+    else:
+        print("Please be sure about the argument syntax : --punctuation_marks=<yes>|<no>")
+        exit()
+        
     corpus_file = {}
     corpus = []
     not_included_files = []
@@ -223,7 +239,7 @@ def debugger(files):
         curated_sentences = get_curated(clean_sentences)
                             
         # removing all non greek characters from the clean sentences set
-        clean_sentences = remove_non_greek(clean_sentences, True)
+        clean_sentences = remove_non_greek(clean_sentences, True, punctuation_marks)
                 
         # removing all non greek characters from the noisy sentences set
         # noisy_sentences = remove_non_greek(noisy_sentences, True)
@@ -232,7 +248,7 @@ def debugger(files):
         strange_sentences = get_strange(clean_sentences, noisy_sentences)
         
         # removing all non greek characters from the set of curated sentences except [] and ⸤⸥
-        curated_sentences = remove_non_greek(curated_sentences, False)
+        curated_sentences = remove_non_greek(curated_sentences, False, punctuation_marks)
         
         # Setting a new processed corpus file      
         corpus_file["clean"] = clean_sentences
@@ -332,8 +348,9 @@ if __name__ == '__main__':
     files = [str(x) for x in Path(corpus).glob("**/*.txt")]
     
     # Debugging the corpus and measuring the related files' noise
-    # Also getting the not included (yet) files
-    corpus, rejected = debugger(files)
+    # Also getting the not included (yet) files    
+
+    corpus, rejected = debugger(files, sys.argv[1])
     
     # Reporting the different set of sentences and the noise measures.
     print("Reporting the clean, noisy, strange and curated sentences......" + "\n")
