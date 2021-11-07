@@ -40,4 +40,8 @@ Follow these steps to run the script:
 
 	$ python3.9 ./src/utilities/debugger.py --punctuation_marks=\<yes\>|\<no\>
 	
-	where "punctuation_marks" defines whether the punctuation marks ",;·" should be kept in sentences or not.
+	where "punctuation_marks" defines whether the punctuation marks ",;·" should be kept in the sentences or not.
+	
+	For instance:
+	$ python3.9 ./src/utilities/debugger.py --punctuation_marks=yes
+	
