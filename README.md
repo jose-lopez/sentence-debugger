@@ -6,9 +6,9 @@ The debugger script receives a collection of files in ancient Greek, the sentenc
 
 The goal here is to process all the supplied files and produce four collections of new files; each one linked to different versions of each one of the original ones. The four collections produced by the script correspond to the following sets of sentences: clean, noisy, strange and curated. Each collection of files is stored in folders with the same name and they are accessible at: ./ancient_greek_test/.
 
-Clean sentences: These set includes only clean sentences both without restoration and those that have been restored.
+Clean sentences: This folder includes only clean sentences both without restoration and those that have been restored.
 
-Noisy sentences: They are noisy sentences whose gaps have been identified and marked up with spetial characters like –⏑⏑. For programming purposes it has been assumed that the above standard markup option defines the correct way to identify noisy regions in a sentence.
+Noisy sentences: They are noisy sentences whose gaps have been identified and marked up with special characters like –⏑⏑. For programming purposes it has been assumed that the above standard markup option defines the correct way to identify noisy regions in a sentence.
 
 Strange sentences: These sentences correspond to those ones in which a noisy region does not follow the standard way of representation.
 
