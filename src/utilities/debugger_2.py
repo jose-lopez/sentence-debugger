@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 
+'''
+Created on 15 Nov. 2023
+@author: jose-lopez
+'''
 
 import copy
 from os import path
 import os
 from pathlib import Path
 import re
+import shutil
 import sys
 import time
+
 import regex
-
-'''
-Created on 5 jul. 2021
-@author: jose-lopez
-'''
-
-"""" A Method to define the end noisy block for a noisy sentence."""
 
 
 def get_end_noisy_block(all_lines, noisy_blocks, block, noisy_pattern):
+    """" A Method to define the end noisy block for a noisy sentence."""
 
     end_block = None
     from_block = block
@@ -42,10 +42,11 @@ def get_end_noisy_block(all_lines, noisy_blocks, block, noisy_pattern):
     return (to_block, end_block)
 
 
-""" Defining if a piece of text has strange noisy blocks (useful to detect new noisy patterns) """
-
-
 def strange_noisy_blocks_in(text):
+    """
+    Defining if a piece of text has strange
+    noisy blocks (useful to detect new noisy patterns)
+    """
 
     noisy_blocks_in_text = regex.findall(
         "[^\u1F00-\u1FFF\u0370-\u03FF\.'\s\[\]⸤⸥]+", text)
@@ -60,14 +61,12 @@ def get_strange_noisy_blocks_in(text):
     return regex.findall("[^\u1F00-\u1FFF\u0370-\u03FF\.'\s\[\]⸤⸥]+", text)
 
 
-""" 
-A method to ensure non noisy sentences in the clean sentences set.
-This happens when there are sentences in a file with noisy patterns
-not embraced in blocks (strange noisy sentences). 
-"""
-
-
 def get_strange(clean_sentences, noisy_sentences):
+    """
+    A method to ensure non noisy sentences in the clean sentences set.
+    This happens when there are sentences in a file with noisy patterns
+    not embraced in blocks (strange noisy sentences).
+    """
     strange_sentences = []
     for sentence in clean_sentences:
         if strange_noisy_blocks_in(sentence):
@@ -77,10 +76,11 @@ def get_strange(clean_sentences, noisy_sentences):
     return strange_sentences
 
 
-""" A method to get curated clean sentences. """
-
-
 def get_curated(clean_sentences):
+    """
+     A method to get curated clean sentences.
+    """
+
     curated_sentences = []
     for sentence in clean_sentences:
         if re.search("\[[^\]]+\]|⸤[^⸥]+⸥", sentence):
@@ -88,54 +88,85 @@ def get_curated(clean_sentences):
     return curated_sentences
 
 
-""" Removing all non Greek characters from a set of sentences. """
-
-
-def remove_non_greek(sentences, full, punctuation_marks):
+def remove_non_greek(sentences, full, punctuation_marks, noisy_pattern):
+    """
+    Removing all non Greek characters from a set of sentences.
+    """
     greek_sentences = []
+    non_greek_sentences = []
+
     for sentence in sentences:
+
+        # ---- Removing noisy blocks --- #
+        clean_sentence = regex.sub(noisy_pattern, ' ', sentence)
+        clean_sentence = regex.sub("(\s){2,}", ' ', clean_sentence)
+
         # ---- Removing non Greek characters --- #
         if full:
             if punctuation_marks == "yes":
-                sentence = regex.sub(
-                    "[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s,;·]", '', sentence)
+                clean_sentence = regex.sub(
+                    "[^\u1F00-\u1FFF\u0370-\u03FF\.'\s,;·]", '', clean_sentence)
             else:
-                sentence = regex.sub(
-                    "[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s]", '', sentence)
+                clean_sentence = regex.sub(
+                    "[^\u1F00-\u1FFF\u0370-\u03FF\.'\s]", '', clean_sentence)
         else:
             if punctuation_marks == "yes":
-                sentence = regex.sub(
-                    "[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s,;·\[\]⸤⸥]", '', sentence)
+                clean_sentence = regex.sub(
+                    "[^\u1F00-\u1FFF\u0370-\u03FF\.'\s,;·\[\]⸤⸥]", '', clean_sentence)
             else:
-                sentence = regex.sub(
-                    "[^\u1F00-\u1FFF\u0370-\u03FF\.—'\s\[\]⸤⸥]", '', sentence)
+                clean_sentence = regex.sub(
+                    "[^\u1F00-\u1FFF\u0370-\u03FF\.'\s\[\]⸤⸥]", '', clean_sentence)
 
-        sentence = regex.sub("—", " ", sentence)
+        clean_sentence = regex.sub("(\s){2,}", ' ', clean_sentence)
 
-        num_of_words = len(regex.findall("[\p{L}\p{M}*]+", sentence))
+        num_of_words = len(regex.findall("[\p{L}\p{M}*]+", clean_sentence))
 
         if num_of_words >= 2:  # Only sentences with two or more words
-            greek_sentences.append(sentence)
-    return greek_sentences
+            greek_sentences.append(clean_sentence)
+            non_greek_sentences.append(sentence)
+
+    return non_greek_sentences, greek_sentences
 
 
-""" Building the sets of clean and noisy sentences contained in the corpus"""
+def report_excluded_files(root: str, corpus_path: str, not_included_files: list):
+
+    file_path = root + "not_included/" + "not_included.txt"
+    file = open(
+        file_path, 'w', encoding="utf8")
+
+    to_report = '\n'.join(s for s in not_included_files)
+
+    file.write(''.join(to_report))
+
+    file.close()
+
+    for file_ in not_included_files:
+
+        # Construct the full file paths
+        src_path = os.path.join(corpus_path, file_)
+        dst_path = os.path.join(root + "not_included/", file_)
+        # Copy the file
+        shutil.copy(src_path, dst_path)
 
 
 def debugger(files, argv):
-
+    """
+    Building the sets of clean and noisy sentences contained in the corpus
+    """
     # An argument defining that some punctuation marks must be kept (,;·)
     name = argv.split("=")[0]
     value = argv.split("=")[1]
     if name == "--punctuation_marks" and (value == "yes" or value == "no"):
         punctuation_marks = value
     else:
-        print("Please be sure about the argument syntax : --punctuation_marks=<yes>|<no>")
+        print("Please be sure about the argument syntax : \
+               --punctuation_marks=<yes>|<no>")
         exit()
 
     corpus_file = {}
     corpus = []
     not_included_files = []
+    # noisy_pattern = "(\.\s){2,}|(\.){2,}|(—\s){2,}|(-\s){2,}|\[\s+\]|[¯˘⏓\-⏑]+|(\s—){2,}|(\s-){2,}|\!{1,}|—+"
     noisy_pattern = "(\.\s){2,}|(\.){2,}|(—\s){2,}|(–\s){2,}|(-\s){2,}|(⸐\s){2,}|(\s+){2,}|[¯˘⏓\-—–⸐⏑\?]+|(\s—){2,}|(\s–){2,}|(\s-){2,}|(\s⸐){2,}|\!{1,}|\¡{1,}"
 
     processed_files = 0
@@ -152,7 +183,8 @@ def debugger(files, argv):
         print("Processing corpus file {}: {}/{}".format(file_name,
               processed_files, len(files)), "\n")
 
-        # --- Building the sets of clean and noisy sentences for a set of lines (a file) --- #
+        # Building the sets of clean and noisy sentences
+        # for a set of lines (a file) #
         all_lines = ''
         for line in lines:
 
@@ -199,7 +231,8 @@ def debugger(files, argv):
                 start_noisy_block = noisy_blocks[block].start()
                 before_start_block = all_lines[current_coordinate:start_noisy_block]
 
-                # Getting the end noisy block for the noisy sentence in progress and the next noisy block ahead
+                # Getting the end noisy block for the noisy sentence in
+                #  progress and the next noisy block ahead
                 next_block, end_block = get_end_noisy_block(
                     all_lines, noisy_blocks, block, noisy_pattern)
 
@@ -225,7 +258,7 @@ def debugger(files, argv):
                         len(after_end_block_sentences[0]) + 1
                     del before_start_block_sentences[-1]
 
-                    noisy_sentences.append(noisy_sentence)
+                    clean_sentences.append(noisy_sentence)
 
                     for sentence in before_start_block_sentences:
                         if not sentence.isspace():
@@ -240,7 +273,7 @@ def debugger(files, argv):
                                 current_coordinate += len(sentence) + 1
 
                     current_coordinate += len(noisy_sentence) + 1
-                    noisy_sentences.append(noisy_sentence)
+                    clean_sentences.append(noisy_sentence)
 
                 block = next_block
 
@@ -258,7 +291,7 @@ def debugger(files, argv):
                     noisy_sentence = before_start_block_sentences[-1] + \
                         all_lines[start_noisy_block:end_noisy_block] + \
                         after_end_block_sentences[0]
-                    noisy_sentences.append(noisy_sentence)
+                    clean_sentences.append(noisy_sentence)
 
                     if len(before_start_block_sentences) > 1:
                         del before_start_block_sentences[-1]
@@ -273,62 +306,60 @@ def debugger(files, argv):
                         if not sentence.isspace():
                             clean_sentences.append(sentence)
 
-        # Defining the set of clean sentences that has been curated
-        curated_sentences = get_curated(clean_sentences)
-
         # removing all non greek characters from the clean sentences set
-        clean_sentences = remove_non_greek(
-            clean_sentences, True, punctuation_marks)
-
-        # removing all non greek characters from the noisy sentences set
-        # noisy_sentences = remove_non_greek(noisy_sentences, True)
-
-        # Moving strange noisy sentences from the set of clean sentences
-        strange_sentences = get_strange(clean_sentences, noisy_sentences)
-
-        # removing all non greek characters from the set of curated sentences except [] and ⸤⸥
-        curated_sentences = remove_non_greek(
-            curated_sentences, False, punctuation_marks)
+        noisy_sentences, clean_sentences = remove_non_greek(
+            clean_sentences, True, punctuation_marks, noisy_pattern)
 
         # Setting a new processed corpus file
         corpus_file["clean"] = clean_sentences
         corpus_file["noisy"] = noisy_sentences
-        corpus_file["strange"] = strange_sentences
-        corpus_file["curated"] = curated_sentences
-        len_sentences = len(clean_sentences) + \
-            len(noisy_sentences) + len(strange_sentences)
-        if not len_sentences == 0:
-            corpus_file["noise_rate"] = round(
-                (len(noisy_sentences) + len(strange_sentences))/len_sentences, 5)
-            corpus_file["noise_index"] = round(
-                (len(noisy_blocks) + len(strange_sentences))/len_sentences, 5)
 
-        # Updating the processed corpus with a new processed file
-        if not len_sentences == 0:
-            corpus.append(copy.deepcopy(corpus_file))
+        len_sentences = len(clean_sentences)
+
+        if len_sentences >= 1:  # Only processed files with one or more
+                                # sentences go to the corpus.
+            if len_sentences == 1:
+                num_of_words = len(regex.findall(
+                    "[\p{L}\p{M}*]+", clean_sentences[0]))
+                if num_of_words > 2:
+                    # Updating the processed corpus with a new processed file
+                    corpus.append(copy.deepcopy(corpus_file))
+            else:
+                # Updating the processed corpus with a new processed file
+                corpus.append(copy.deepcopy(corpus_file))
+
+        else:
+            not_included_files.append(file_name)
+
         corpus_file.clear()
-
-    print("Excluded files: {} / {}".format(len(not_included_files), len(files)) + "\n")
 
     return (corpus, not_included_files)
 
 
-""" reporting a set of sentences """
+def report_sentences(file, path):
+    """
+    reporting a set of sentences
+    """
+    file_to_report = open(
+        path, 'w', encoding="utf8")
 
+    clean = file["clean"]
+    noisy = file["noisy"]
 
-def report_sentences(sentences, path):
-    if len(sentences) > 0:
-        file = open(
-            path, 'w', encoding="utf8")
-        for sentence in sentences:
-            file.write(sentence.strip() + "." + "\n")
-        file.close()
+    for item in range(len(clean)):
+        file_to_report.write("\n" + "=====:" + "\n")
+        file_to_report.write("\n" + "before:" + "\n")
+        file_to_report.write(noisy[item].strip() + "." + "\n")
+        file_to_report.write("\n" + "after:" + "\n")
+        file_to_report.write(clean[item].strip() + "." + "\n")
 
-
-""" Reporting the rejected files"""
+    file_to_report.close()
 
 
 def report_rejected(rejected, path):
+    """
+    Reporting the rejected files
+    """
     rejected_path = path + "/not_included_files.txt"
     if len(rejected) > 0:
         not_included = open(
@@ -344,10 +375,10 @@ def report_rejected(rejected, path):
         print("....... done")
 
 
-""" Reporting the noise related to each file in the corpus """
-
-
 def report_noise(corpus, path):
+    """
+    Reporting the noise related to each file in the corpus
+    """
     noise_rate_file = "/noise_rate.txt"
     noise_index_file = "/noise_index.txt"
     file_path = path + noise_index_file
@@ -355,7 +386,8 @@ def report_noise(corpus, path):
     # Sorting the corpus in descending order based on the index of noise
     corpus.sort(key=lambda x: x["noise_index"], reverse=True)
 
-    print("Reporting the corpus' files order based on the index of noise......." + "\n")
+    print("Reporting the corpus' files order based on the index of noise.....")
+    print("\n")
     time.sleep(2)  # To see on console what is happening.
     report = open(
         file_path, 'w', encoding="utf8")
@@ -364,7 +396,8 @@ def report_noise(corpus, path):
 
     for file in corpus:
         report.write(file["name"] + "\t" + "\t" + str(file["noise_rate"]
-                                                      ) + "\t" + "\t" + str(file["noise_index"]) + "\n")
+                                                      ) + "\t" + "\t" + str(file["noise_index"]))
+        print("\n")
     report.close()
     print("....... done" + "\n")
     time.sleep(2)
@@ -374,7 +407,7 @@ def report_noise(corpus, path):
 
     file_path = path + noise_rate_file
 
-    print("Reporting the corpus' files order based on the rate of noise......." + "\n")
+    print("Reporting the corpus' files order based on the rate of noise.....")
     time.sleep(2)
     report = open(
         file_path, 'w', encoding="utf8")
@@ -382,44 +415,53 @@ def report_noise(corpus, path):
                  "Noise rate:" + "\t" + "Noise index:" + "\n")
     for file in corpus:
         report.write(file["name"] + "\t" + "\t" + str(file["noise_rate"]
-                                                      ) + "\t" + "\t" + str(file["noise_index"]) + "\n")
+                                                      ) + "\t" + "\t" + str(file["noise_index"]))
+        print("\n")
     report.close()
     print("....... done" + "\n")
 
 
-""" Debugging the corpus and reporting the related files' noise """
-
 if __name__ == '__main__':
+    """
+    Debugging the corpus and reporting the related files' noise
+    """
 
-    folders = ["clean", "noisy", "strange", "curated", "report"]
+    folders = ["clean", "not_included"]
 
     root = "./texts/"
-    corpus = root + "corpus"
+    corpus_path = root + "corpus"
 
     for folder in folders:
         _path = root + folder
-        if not path.exists(_path):
-            os.mkdir(_path)
+        if path.exists(_path):
+            shutil.rmtree(_path)
+        os.mkdir(_path)
 
-    files = [str(x) for x in Path(corpus).glob("**/*.txt")]
+    files = [str(x) for x in Path(corpus_path).glob("**/*.txt")]
 
     # Debugging the corpus and measuring the related files' noise
     # Also getting the not included (yet) files
 
-    corpus, rejected = debugger(files, sys.argv[1])
+    corpus, not_included_files = debugger(files, sys.argv[1])
 
     # Reporting the different set of sentences and the noise measures.
-    print("Reporting the clean, noisy, strange and curated sentences......" + "\n")
+    print("Saving the processed sentences ......")
+    print("\n")
+
     time.sleep(2)  # To see on console what is happening.
+
     for file in corpus:
+
         file_name = "/" + file["name"]
-        for folder in folders:
-            if not folder == "report":
-                file_path = root + folder + file_name
-                # Reporting the sets of sentences
-                report_sentences(file[folder], file_path)
-    else:
-        _path = root + folder
-        # Reporting the related files' noise measures.
-        report_noise(corpus, _path)
-        report_rejected(rejected, _path)
+
+        file_path = _path + file_name
+        # Reporting the sets of sentences
+        report_sentences(file, file_path)
+
+    print("Reporting the excluded files ......")
+    print(f'Excluded files: {len(not_included_files)} / {len(files)}')
+    print("\n")
+
+    report_excluded_files(root, corpus_path, not_included_files)
+
+    print("....... done")
